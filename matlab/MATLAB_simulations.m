@@ -250,6 +250,65 @@ end
     
 exportgraphics(figCombined, fullfile('figures', 'convergence_all.png'), 'Resolution', 300);
 
+%% --------------------------- PRESENTATION FIGURE ---------------------------
+figCombined = figure('Name', 'convergence_all_presentation', ...
+    'Position', [100, 100, 1600, 500]);
+
+t = tiledlayout(1, 3, ...
+    'TileSpacing', 'normal', ...
+    'Padding', 'compact');
+
+for fIdx = 1:nFunc
+
+    ax = nexttile;
+    hold on;
+
+    % Canonical PSO
+    p1 = plot(1:maxIter, squeeze(meanCurve(fIdx, 1, :)), ...
+        'k-', 'LineWidth', 2);
+
+    % FIPS-Ring
+    p2 = plot(1:maxIter, squeeze(meanCurve(fIdx, 2, :)), ...
+        'b-', 'LineWidth', 1.5);
+
+    % FIPS-All
+    p3 = plot(1:maxIter, squeeze(meanCurve(fIdx, 3, :)), ...
+        'r-', 'LineWidth', 1.5);
+
+    set(gca, 'YScale', 'log');
+
+    xlabel('Iteration');
+    ylabel('Mean best fitness');
+
+    title(funcNames{fIdx});
+
+    grid on;
+    box on;
+
+    set(gca, 'FontSize', 12);
+
+    % Save handles only from the first subplot
+    if fIdx == 1
+        legendHandles = [p1 p2 p3];
+    end
+
+    hold off;
+end
+
+% One common legend for the entire figure
+lgd = legend(legendHandles, confNames, ...
+    'Orientation', 'horizontal');
+
+lgd.Layout.Tile = 'south';
+
+% Export
+if ~exist('figures', 'dir')
+    mkdir('figures');
+end
+
+exportgraphics(figCombined, ...
+    fullfile('figures', 'convergence_all_presentation.png'), ...
+    'Resolution', 300);
 %% ========================================================================
 % BENCHMARK FUNCITONS (2D formulations, Eqs. 5.1-5.3 of the thesis)
 % =========================================================================
